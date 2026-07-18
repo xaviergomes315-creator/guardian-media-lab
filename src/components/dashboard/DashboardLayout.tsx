@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outlet, useLocation, useNavigationType, NavigationType } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
@@ -8,7 +8,6 @@ export default function DashboardLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-  const navigationType = useNavigationType();
 
   // Auto-collapse sidebar on tablet and handle resize
   useEffect(() => {
@@ -28,24 +27,6 @@ export default function DashboardLayout() {
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
-
-  // Determine animation direction based on navigation type
-  const getAnimationVariants = () => {
-    // Don't animate on POP (back/forward) to avoid jarring effect
-    if (navigationType === NavigationType.Pop) {
-      return {
-        initial: { opacity: 1 },
-        animate: { opacity: 1 },
-        exit: { opacity: 1 },
-      };
-    }
-    // Animate on PUSH (forward navigation)
-    return {
-      initial: { opacity: 0, y: 8 },
-      animate: { opacity: 1, y: 0 },
-      exit: { opacity: 0, y: -8 },
-    };
-  };
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
@@ -86,16 +67,9 @@ export default function DashboardLayout() {
 
           {/* Page Content */}
           <main className="pt-16 min-h-screen">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={location.pathname}
-                {...getAnimationVariants()}
-                transition={{ duration: 0.2, ease: 'easeOut' }}
-                className="p-4 sm:p-5 md:p-6 lg:p-8 max-w-[1600px] mx-auto"
-              >
-                <Outlet />
-              </motion.div>
-            </AnimatePresence>
+            <div className="p-4 sm:p-5 md:p-6 lg:p-8 max-w-[1600px] mx-auto">
+              <Outlet />
+            </div>
           </main>
       </div>
     </div>
